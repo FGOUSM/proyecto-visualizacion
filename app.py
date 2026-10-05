@@ -6,7 +6,7 @@ from src.utils import cargar, log_limpieza
 st.set_page_config(page_title="Demanda de subidas – Gran Santiago", layout="wide")
 d, log = cargar(), log_limpieza()
 
-st.title("Demanda de subidas de pasajeros en el Gran Santiago")
+st.title("Demanda de subidas de pasajeros en el la región Metropolitana")
 st.caption("Abril 2026 · Subidas promedio por paradero/estación en bloques de 30 min · UTFSM – Visualización, Avance 2")
 
 st.header("1. Contexto y pregunta")
