@@ -49,29 +49,8 @@ centrales y de oriente (Santiago, Providencia, Las Condes, Vitacura) solo 13–1
 del viaje pendular periferia → centro: la periferia presiona la red en la mañana y el centro en la tarde.
 """)
 
-# ---- Concentración
-st.header("3. Concentración de la demanda entre paraderos (Lorenz)")
-fig = go.Figure(go.Scatter(x=[0, 100], y=[0, 100], mode="lines", line=dict(color="#bbb", dash="dash"), name="Igualdad"))
-res = []
-for t in ORDEN_DIA:
-    s = f[f["Tipo_dia"] == t].groupby("Paradero", observed=True)["Subidas_Promedio"].sum().sort_values().to_numpy()
-    if len(s) == 0: continue
-    cum = np.cumsum(s) / s.sum() * 100
-    x = np.arange(1, len(s) + 1) / len(s) * 100
-    idx = np.linspace(0, len(s) - 1, min(len(s), 400)).astype(int)
-    fig.add_trace(go.Scatter(x=x[idx], y=cum[idx], mode="lines", name=t, line=dict(color=COL_DIA[t])))
-    res.append((t, 100 - np.interp(90, x, cum)))
-fig.update_layout(xaxis_title="% acumulado de paraderos (de menor a mayor demanda)", yaxis_title="% acumulado de subidas")
-st.plotly_chart(fig, width="stretch")
-st.caption("El 10 % de paraderos con más demanda captura: " + " · ".join(f"**{t}** {v:.0f} %" for t, v in res))
-st.markdown("""
-**Interpretación.** La concentración es muy alta: en día laboral, el 10 % de los paraderos/estaciones reúne ~78 % de las subidas y
-el 1 % superior ~50 %. La red tiene pocos nodos críticos (casi todos de Metro) que sostienen la mayor parte de la demanda; la curva se mantiene
-alta el fin de semana.
-""")
-
 # ---- Laboral vs fin de semana por comuna
-st.header("4. Caída de la demanda en fin de semana por comuna")
+st.header("3. Caída de la demanda en fin de semana por comuna")
 t = f.groupby(["Comuna", "Tipo_dia"], observed=True)["Subidas_Promedio"].sum().unstack().dropna(subset=["Laboral"])
 r = pd.DataFrame({"Sábado": t["Sábado"] / t["Laboral"] * 100, "Domingo": t["Domingo"] / t["Laboral"] * 100}).dropna().sort_values("Domingo")
 fig = px.bar(r.reset_index().melt("Comuna", var_name="Tipo_dia", value_name="pct"), x="Comuna", y="pct", color="Tipo_dia",
